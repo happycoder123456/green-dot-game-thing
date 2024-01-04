@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simple Flight Simulator</title>
+  <style>
+    body { margin: 0; }
+    canvas { display: block; }
+  </style>
+</head>
+<body>
+
+<script src="https://threejs.org/build/three.js"></script>
+<script>
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+const airplaneGeometry = new THREE.BoxGeometry(1, 0.2, 1);
+const airplaneMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+const airplane = new THREE.Mesh(airplaneGeometry, airplaneMaterial);
+scene.add(airplane);
+
+camera.position.z = 5;
+
+const controls = {
+  forward: false,
+  backward: false,
+  left: false,
+  right: false,
+  up: false,
+  down: false,
+};
+
+document.addEventListener('keydown', (event) => {
+  handleKeyPress(event.code, true);
+});
+
+document.addEventListener('keyup', (event) => {
+  handleKeyPress(event.code, false);
+});
+
+function handleKeyPress(keyCode, value) {
+  switch (keyCode) {
+    case 'KeyW':
+      controls.forward = value;
+      break;
+    case 'KeyS':
+      controls.backward = value;
+      break;
+    case 'KeyA':
+      controls.left = value;
+      break;
+    case 'KeyD':
+      controls.right = value;
+      break;
+    case 'Space':
+      controls.up = value;
+      break;
+    case 'KeyF':
+      controls.down = value;
+      break;
+  }
+}
+
+function animate() {
+  requestAnimationFrame(animate);
+
+  if (controls.forward) airplane.position.z -= 0.1;
+  if (controls.backward) airplane.position.z += 0.1;
+  if (controls.left) airplane.position.x -= 0.1;
+  if (controls.right) airplane.position.x += 0.1;
+  if (controls.up) airplane.position.y += 0.1;
+  if (controls.down) airplane.position.y -= 0.1;
+
+  renderer.render(scene, camera);
+}
+
+animate();
+
+</script>
+
+</body>
+</html>
